@@ -33,7 +33,7 @@ router.get('/ejecutivo', async (req, res) => await MicroFrontController.ejecutiv
 router.get('/documentacion/estudio/poderes', async (req, res) => await MicroFrontController.documentacionEstudioPoderes({req, res}))
 router.get('/paises', async (req, res) => await MicroFrontController.getPaises({req, res}))
 router.get('/empresa/datos', async (req, res) => await MicroFrontController.empresaDatos({req, res}))
-
+router.get('/informe/documentosConProblemas', async (req, res) => await MicroFrontController.documentosConProblemas({req, res}))
 
 router.get('/sitio/carrusel', async (req, res) => await SitioController.getCarrusel({req, res}))
 

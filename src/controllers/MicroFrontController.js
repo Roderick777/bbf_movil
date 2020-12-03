@@ -19,7 +19,8 @@ class MicroFrontController{
                 route: '/',
             },
             {
-                appName: 'http://localhost:4201/main.js',
+                // appName: 'http://localhost:4201/main.js',
+                appName: 'http://localhost:4211/main.js',
                 enabled: true,
                 name: '@nectia/documentos',
                 route: 'documentos',
@@ -119,6 +120,46 @@ class MicroFrontController{
             comuna: '',
             codigoPostal: ''
           }
+        res.json({ 
+            respuesta: {
+                datos: datos
+            }
+        })
+    }
+
+    static async documentosConProblemas({ res }) {
+        const datos = [
+          {
+            clasificacion: 'Factura en canje y/o Retenida',
+            cantidadDocumentos: 50,
+            montoDocumento: 3000000
+          },
+          {
+            clasificacion: 'Factura cancelada y/o documentada al cliente',
+            cantidadDocumentos: 50,
+            montoDocumento: 3000000
+          },
+          {
+            clasificacion: 'Factura anulada y/o devuelta',
+            cantidadDocumentos: 50,
+            montoDocumento: 3000000
+          },
+          {
+            clasificacion: 'Pendiente por nota de Crédito',
+            cantidadDocumentos: 50,
+            montoDocumento: 3000000
+          },
+          {
+            clasificacion: 'Mercadería o servicio o notificación rechazado',
+            cantidadDocumentos: 50,
+            montoDocumento: 3000000
+          },
+          {
+            clasificacion: 'Cheque protestado',
+            cantidadDocumentos: 50,
+            montoDocumento: 3000000
+          }
+        ]
         res.json({ 
             respuesta: {
                 datos: datos
