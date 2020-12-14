@@ -2,6 +2,12 @@ const Router = require('express')
 const router = Router()
 const UsuarioController = require('../controllers/UsuarioController')
 const FactoringController = require('../controllers/FactoringController')
+const AuthController = require('../controllers/AuthController')
+
+
+// AUTH
+router.get('/jwt-test', async (req, res) => await AuthController.jwtTest({req, res}))
+router.post('/iniciarsesion', async (req, res) => await AuthController.iniciarSesion({req, res}))
 
 // USUARIO
 
