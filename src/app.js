@@ -21,6 +21,5 @@ app.use(bodyParser.json());
 
 // Routes
 app.use(require('./routes/routes'))
-// app.use('/auth', require('./routes/authRoutes'))
 
 module.exports = app;

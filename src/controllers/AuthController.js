@@ -1,60 +1,61 @@
 const Usuario = require('../models/Usuario')
 const jwt = require('jsonwebtoken')
-const jwt_decode = require('jwt-decode')
+const Mail = require('../util/mail')
 
 class AuthController{
+
   static async iniciarSesion({ req, res }) {
     const { correo, clave } = req.body
     const usuario = await Usuario.findOne({correo, clave})
     if (usuario) {
+      usuario.clave = 'secreto'
       const token = jwt.sign({ usuario }, 'millavesecreta', { expiresIn: 1440 });
-      usuario.token = token
-      res.json({datos: usuario, error: false, message: 'éxito'})
+      res.json({datos: usuario, token, error: false, message: 'éxito'})
     } else {
       res.send({ error: true, message: 'Usuario y/o clave incorrecto(s)'})
     }  
-  } 
-  static async jwtTest({ res }) {
-      const datos = {
-        DocenteId: '00000000-0000-0000-0000-000000000000',
-        Nombre: 'Nombre Ejemplo',
-        RUN: '11111111-1',
-        Direccion: 'Calle x N° 123',
-        Telefono: '+569 87xx xxxx',
-        Celular: '+562 87 xxx xx',
-        Estado: 'string',
-        Mensaje: 'Autenticación correcta', 
-      }
-      const token = jwt.sign(datos, 'millavesecreta', { expiresIn: 1440 });
-      const decoded = jwt_decode(token)
-      console.log('test jwt', decoded)
-      datos.token = token
-      res.json(datos)
   }
-  static async validarToken({ req, res }) {
-    const token = req.headers['access-token']
-    if (token) {
-      jwt.verify(token, app.get('llave'), (err, decoded) => {      
-        if (err) {
-          return res.json({ mensaje: 'Token inválida' });    
-        } else {
-          req.decoded = decoded;    
-          next();
-        }
-      });
+
+  /** @param {string} correo, @param {string} clave, @param {string} nombre */
+  static async registrarse({req, res}) {
+    const body = this.crearConfiguracionUsuario(req.body)
+    const existeUsuario = await this.existeUsuario(body.correo)
+    if(existeUsuario) {
+      res.status(428).json({error: 'El correo ingresado ya existe en el sistema', datos: null})
     } else {
-      res.send({ mensaje: 'Token no proveída.' });
+      const usuario = await Usuario.create(body)
+      const token = jwt.sign({ usuario }, 'millavesecreta', { expiresIn: 1440 });
+      const mailOptions = Mail.getMailOptions(
+        'rodrigoalexissss@gmail.com',
+        body.correo,
+        'Bienvenido a la plataforma',
+        'Te damos la bienvenida a la plataforma'
+      )
+      usuario.token = token
+      Mail.send(mailOptions)
+      res.status(200).json({error: '', datos: usuario})
     }
   }
-  static async usuarioAutenticado({ req, res}) {
-    const usuario = {
-        nombre: 'John',
-        rut: '11111111-1',
-        correo: 'example',
-        clave: '12345'
+
+  static crearConfiguracionUsuario(body) {
+    body.config = {
+      tipoTrimestre: null, 
+      periodoElegido: null,
+      evaluaciones: null,
+      establecimiento: null,
     }
-    res.status(200).json(usuario)
+    return body
   }
+
+  static async existeUsuario(correo) {
+    const usuario = await Usuario.find({correo})
+    if(usuario.length > 0) {
+      return true
+    } else {
+      return false
+    }
+  }
+   
 }
 
 module.exports = AuthController
