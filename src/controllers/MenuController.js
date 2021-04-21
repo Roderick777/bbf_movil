@@ -12,11 +12,18 @@ class MenuController {
     res.status(200).json(menu)
   }
 
+  static async listarMenuProfesor({req, res}) {
+    const menu = await Menu.find({ perfil: 'profesor'})
+    res.status(200).json(menu)
+  }
+
   static async eliminar({ req, res }) {
     const _id = req.params.id
     const menu = await Menu.findByIdAndDelete({_id});
     res.status(200).json(menu);
   }
+
+
 }
 
 module.exports = MenuController

@@ -24,6 +24,8 @@ router.get('/usuario/libroNota/ultimos', async (req, res) => await UsuarioContro
 router.post('/menu', async (req, res) => await MenuController.crear({req, res}))
 router.get('/menu', async (req, res) => await MenuController.listar({req, res}))
 router.delete('/menu/:id', async (req, res) => await MenuController.eliminar({req, res}))
+router.get('/menu/profesor', async (req, res) => await MenuController.listarMenuProfesor({req, res}))
+
 
 // ESTABLECIMIENTO
 router.post('/establecimiento', async (req, res) => await EstablecimientoController.crear({req, res}))
