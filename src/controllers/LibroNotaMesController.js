@@ -39,7 +39,7 @@ class LibroNotaMesController {
 
       res.status(200).json(nuevoLibroNotaMes)
     } catch (e) {
-      res.status(500).json({error: e, mensaje: 'Error al crear'})
+      res.status(500).json({error: e, mensaje: 'Error al crear', token })
     }
     
   }
