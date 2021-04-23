@@ -19,29 +19,38 @@ class LibroNotaMesController {
   }
 
   static async crear (req, res) {
-    const token = jwt_decode(req.body.token)
-    const establecimiento = await Establecimiento.findById(token.usuario.config.establecimiento)
-    const nuevoLibroNotaMes = await LibroNotaMes.create({
-      idAsignatura: req.body.asignatura._id,
-      periodo: req.body.periodo,
-      idCurso: req.body.curso._id,
-      idEstablecimiento: establecimiento._id,
-      idUsuario: token.usuario._id,
-      evaluaciones: [],
-      mes: req.body.mes
-    })
-    req.body.idLibroNotaMes = nuevoLibroNotaMes._id
+    try{
+      const token = jwt_decode(req.body.token)
+      const establecimiento = await Establecimiento.findById(token.usuario.config.establecimiento)
+      const nuevoLibroNotaMes = await LibroNotaMes.create({
+        idAsignatura: req.body.asignatura._id,
+        periodo: req.body.periodo,
+        idCurso: req.body.curso._id,
+        idEstablecimiento: establecimiento._id,
+        idUsuario: token.usuario._id,
+        evaluaciones: [],
+        mes: req.body.mes
+      })
+      req.body.idLibroNotaMes = nuevoLibroNotaMes._id
 
-    for (let posicion = 0; posicion < req.body.cantidadEvaluaciones; posicion ++) {
-      const evaluacion = await EvaluacionService.crearEvaluacion({ req, posicion })
+      for (let posicion = 0; posicion < req.body.cantidadEvaluaciones; posicion ++) {
+        const evaluacion = await EvaluacionService.crearEvaluacion({ req, posicion })
+      }
+
+      res.status(200).json(nuevoLibroNotaMes)
+    } catch (e) {
+      res.status(500).json({error: e, mensaje: 'Error al crear'})
     }
-
-    res.status(200).json(nuevoLibroNotaMes)
+    
   }
 
   static async actualizar ({ req, res }) {
-    const respuesta = await EvaluacionService.actualizarEvaluacion({ req })
-    res.status(200).json(respuesta)
+    try {
+      const respuesta = await EvaluacionService.actualizarEvaluacion({ req })
+      res.status(200).json(respuesta)
+    } catch (e) {
+      res.status(500).json({error: e, mensaje: 'Error al actualizar'})
+    }
   }
 
   static async getLibroNotaMes({ req, res}) {
