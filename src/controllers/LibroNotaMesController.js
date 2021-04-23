@@ -39,6 +39,7 @@ class LibroNotaMesController {
 
       res.status(200).json(nuevoLibroNotaMes)
     } catch (e) {
+      const token = jwt_decode(req.body.token)
       res.status(500).json({error: e, mensaje: 'Error al crear', token })
     }
     
